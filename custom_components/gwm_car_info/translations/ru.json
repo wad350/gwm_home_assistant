@@ -1,0 +1,108 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Настройка GWM Car Info",
+        "description": "Введите данные для подключения к вашему автомобилю GWM",
+        "data": {
+          "email": "Email",
+          "password": "Пароль",
+          "vin": "VIN номер автомобиля (необязательно)"
+        },
+        "data_description": {
+          "email": "Email для входа в аккаунт GWM (например: your_email@example.com)",
+          "password": "Пароль от аккаунта GWM",
+          "vin": "17-значный VIN номер вашего автомобиля (если не указан, будет найден автоматически)"
+        }
+      },
+      "vehicle_select": {
+        "title": "Выбор автомобиля",
+        "description": "Найдено {vehicle_count} привязанных автомобилей. Выберите нужный:",
+        "data": {
+          "vin": "Автомобиль"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Не удалось подключиться к серверам GWM",
+      "invalid_auth": "Неверный email или пароль",
+      "invalid_vin": "Неверный VIN номер или автомобиль не найден",
+      "unknown": "Неизвестная ошибка"
+    },
+    "abort": {
+      "already_configured": "Автомобиль с таким VIN уже настроен"
+    }
+  }
+  ,
+  "entity": {
+    "sensor": {
+      "service_status": {
+        "name": "Статус сервиса",
+        "state": {"active":"Активен","inactive":"Неактивен","unknown":"Неизвестно"}
+      },
+      "engine_state": {
+        "name": "Состояние двигателя",
+        "state": {"off":"Заглушен","starting":"Запуск","running":"Заведен"}
+      }
+      ,
+      "battery_12v": {"name": "Заряд 12V батареи"},
+      "fuel_volume": {"name": "Объем топлива"},
+      "mileage": {"name": "Пробег"},
+      "fuel_range": {"name": "Запас хода"},
+      "signal_strength": {"name": "Сигнал сети"},
+      "sunroof": {"name": "Люк"},
+      "last_update": {"name": "Последнее обновление"},
+      "tire_pressure_fl": {"name": "Давление шины передняя левая"},
+      "tire_pressure_fr": {"name": "Давление шины передняя правая"},
+      "tire_pressure_rl": {"name": "Давление шины задняя левая"},
+      "tire_pressure_rr": {"name": "Давление шины задняя правая"},
+      "tire_temp_fl": {"name": "Температура шины передняя левая"},
+      "tire_temp_fr": {"name": "Температура шины передняя правая"},
+      "tire_temp_rl": {"name": "Температура шины задняя левая"},
+      "tire_temp_rr": {"name": "Температура шины задняя правая"}
+      
+    },
+    "binary_sensor": {
+      "doors_unlocked": {
+        "name": "Центральный замок",
+        "state": {"on": "Открыт", "off": "Закрыт"}
+      },
+      "door_front_left": {"name": "Передняя левая дверь"},
+      "door_front_right": {"name": "Передняя правая дверь"},
+      "door_rear_left": {"name": "Задняя левая дверь"},
+      "door_rear_right": {"name": "Задняя правая дверь"},
+      "door_trunk": {"name": "Дверь багажника"},
+      "hood": {"name": "Капот"},
+      "air_conditioner": {"name": "Кондиционер"},
+      "gps_authorized": {"name": "GPS авторизован"}
+    },
+    "device_tracker": {
+      "vehicle_location": {
+        "name": "Местоположение автомобиля",
+        "state_attributes": {
+          "mileage": {"name": "Пробег"},
+          "fuel_volume": {"name": "Объем топлива"},
+          "fuel_range": {"name": "Запас хода"},
+          "engine_state": {
+            "name": "Состояние двигателя",
+            "state": {"off": "Заглушен", "starting": "Запуск", "running": "Заведен"}
+          },
+          "doors_locked": {
+            "name": "Центральный замок",
+            "state": {"locked": "Закрыт", "unlocked": "Открыт"}
+          },
+          "service_status": {
+            "name": "Статус сервиса",
+            "state": {"active": "Активен", "inactive": "Неактивен", "unknown": "Неизвестно"}
+          },
+          "vin": {"name": "VIN"},
+          "model": {"name": "Модель"},
+          "vehicleNumber": {"name": "ГосНомер"},
+          "update_time": {"name": "Время обновления"},
+          "latitude": {"name": "Широта"},
+          "longitude": {"name": "Долгота"}
+        }
+      }
+    }
+  }
+}

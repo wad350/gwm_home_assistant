@@ -1,0 +1,9 @@
+{
+  "name": "GWM Car Info",
+  "hacs": "1.6.0",
+  "domains": ["sensor", "binary_sensor", "device_tracker"],
+  "iot_class": "cloud_polling",
+  "render_readme": true,
+  "zip_release": false,
+  "filename": false
+}

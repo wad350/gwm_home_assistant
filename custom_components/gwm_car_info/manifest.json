@@ -1,0 +1,13 @@
+{
+  "domain": "gwm_car_info",
+  "name": "GWM Car Info",
+  "codeowners": ["@wad350"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/wad350/gwm_home_assistant",
+  "integration_type": "device",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/wad350/gwm_home_assistant/issues",
+  "requirements": ["requests>=2.25.1"],
+  "version": "1.0"
+}

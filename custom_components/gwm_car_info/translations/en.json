@@ -1,0 +1,109 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "GWM Car Info Setup",
+        "description": "Enter your credentials to connect to your GWM vehicle",
+        "data": {
+          "email": "Email",
+          "password": "Password",
+          "vin": "Vehicle VIN number (optional)"
+        },
+        "data_description": {
+          "email": "Email for GWM account login (e.g.: your_email@example.com)",
+          "password": "Password for your GWM account",
+          "vin": "17-digit VIN number of your vehicle (if not specified, will be found automatically)"
+        }
+      },
+      "vehicle_select": {
+        "title": "Vehicle Selection",
+        "description": "Found {vehicle_count} bound vehicles. Select the one you need:",
+        "data": {
+          "vin": "Vehicle"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to GWM servers",
+      "invalid_auth": "Invalid email or password",
+      "invalid_vin": "Invalid VIN number or vehicle not found",
+      "unknown": "Unknown error occurred"
+    },
+    "abort": {
+      "already_configured": "Vehicle with this VIN is already configured"
+    }
+  }
+  ,
+  "entity": {
+    "sensor": {
+      "service_status": {
+        "name": "Service Status",
+        "state": {"active":"Active","inactive":"Inactive","unknown":"Unknown"}
+      },
+      "engine_state": {
+        "name": "Engine State",
+        "state": {"off":"Off","starting":"Starting","running":"Running"}
+      }
+      ,
+      "battery_12v": {"name": "12V Battery"},
+      "fuel_volume": {"name": "Fuel Volume"},
+      "mileage": {"name": "Mileage"},
+      "fuel_range": {"name": "Fuel Range"},
+      "signal_strength": {"name": "Signal Strength"},
+      "sunroof": {"name": "Sunroof"},
+      "last_update": {"name": "Last Update"},
+      "tire_pressure_fl": {"name": "Front Left Tire Pressure"},
+      "tire_pressure_fr": {"name": "Front Right Tire Pressure"},
+      "tire_pressure_rl": {"name": "Rear Left Tire Pressure"},
+      "tire_pressure_rr": {"name": "Rear Right Tire Pressure"},
+      "tire_temp_fl": {"name": "Front Left Tire Temperature"},
+      "tire_temp_fr": {"name": "Front Right Tire Temperature"},
+      "tire_temp_rl": {"name": "Rear Left Tire Temperature"},
+      "tire_temp_rr": {"name": "Rear Right Tire Temperature"}
+      
+    },
+    "binary_sensor": {
+      "doors_unlocked": {
+        "name": "Central Lock",
+        "state": {"on": "Open", "off": "Closed"}
+      },
+      "door_front_left": {"name": "Front Left Door"},
+      "door_front_right": {"name": "Front Right Door"},
+      "door_rear_left": {"name": "Rear Left Door"},
+      "door_rear_right": {"name": "Rear Right Door"},
+      "door_trunk": {"name": "Trunk Door"},
+      "hood": {"name": "Hood"},
+      "air_conditioner": {"name": "Air Conditioner"},
+      "gps_authorized": {"name": "GPS Authorized"}
+    },
+    
+    "device_tracker": {
+      "vehicle_location": {
+        "name": "Vehicle Location",
+        "state_attributes": {
+          "mileage": {"name": "Mileage"},
+          "fuel_volume": {"name": "Fuel volume"},
+          "fuel_range": {"name": "Fuel range"},
+          "engine_state": {
+            "name": "Engine state",
+            "state": {"off": "Off", "starting": "Starting", "running": "Running"}
+          },
+          "doors_locked": {
+            "name": "Doors locked",
+            "state": {"locked": "Locked", "unlocked": "Unlocked"}
+          },
+          "service_status": {
+            "name": "Service status",
+            "state": {"active": "Active", "inactive": "Inactive", "unknown": "Unknown"}
+          },
+          "vin": {"name": "VIN"},
+          "model": {"name": "Model"},
+          "vehicleNumber": {"name": "Plate"},
+          "update_time": {"name": "Update time"},
+          "latitude": {"name": "Latitude"},
+          "longitude": {"name": "Longitude"}
+        }
+      }
+    }
+  }
+}
