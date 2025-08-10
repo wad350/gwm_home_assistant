@@ -112,8 +112,18 @@ class GWMDataUpdateCoordinator(DataUpdateCoordinator):
                 self.client.get_vehicle_by_vin, self.vin
             )
             
+            # Если данные не получены, пробуем переавторизоваться и повторить один раз
             if vehicle_data is None:
-                raise UpdateFailed("Не удалось получить данные автомобиля")
+                _LOGGER.debug("Primary fetch failed, trying to re-login and refetch")
+                relogin_ok = await self.hass.async_add_executor_job(
+                    self.client.login, self.email, self.password
+                )
+                if relogin_ok:
+                    vehicle_data = await self.hass.async_add_executor_job(
+                        self.client.get_vehicle_by_vin, self.vin
+                    )
+                if vehicle_data is None:
+                    raise UpdateFailed("Не удалось получить данные автомобиля")
             
             # Парсим данные из items (items находится на верхнем уровне!)
             items = vehicle_data.get("items", [])
