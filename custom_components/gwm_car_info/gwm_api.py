@@ -34,6 +34,9 @@ class GWMCarInfoClient:
         self.session = requests.Session()
         self.access_token = None
         self.user_info = None
+        self.last_error_code = None
+        self.last_error_description = None
+        self.last_http_status = None
         
         # API конфигурация
         self.base_url = "https://rus-h5-gateway.gwmcloud.com/"
@@ -217,9 +220,27 @@ class GWMCarInfoClient:
 
     # rsa_encrypt_password удален (isEncrypt: False)
 
+    def clear_last_error(self) -> None:
+        """Clear details from the previous failed API call."""
+        self.last_error_code = None
+        self.last_error_description = None
+        self.last_http_status = None
+
+    def set_last_error(
+        self,
+        code: object = None,
+        description: object = None,
+        http_status: int | None = None,
+    ) -> None:
+        """Store sanitized details about the last failed API call."""
+        self.last_error_code = str(code) if code is not None else None
+        self.last_error_description = str(description) if description is not None else None
+        self.last_http_status = http_status
+
     def login(self, email: str, password: str) -> bool:
         """Login to GWM account."""
         _LOGGER.info("Attempting login for user: %s", _mask_email(email))
+        self.clear_last_error()
         
         # Настраиваем SSL сертификаты перед запросами
         ssl_ok = self.setup_ssl_certificates()
@@ -253,12 +274,27 @@ class GWMCarInfoClient:
             headers = {**signature_headers, **additional_headers}
             
             _LOGGER.debug("Making login request to: %s", url)
-            response = self.session.post(url, headers=headers, json=login_data, timeout=30)
+            response = self.session.post(
+                url,
+                headers=headers,
+                data=body.encode("utf-8"),
+                timeout=30,
+            )
             
             _LOGGER.debug("Login response status: %s", response.status_code)
             
             if response.status_code != 200:
-                _LOGGER.error("HTTP error during login: %s", response.status_code)
+                response_text = response.text[:500] if response.text else ""
+                self.set_last_error(
+                    code="http_error",
+                    description=response_text or "Empty response body",
+                    http_status=response.status_code,
+                )
+                _LOGGER.error(
+                    "HTTP error during login: status=%s body=%s",
+                    response.status_code,
+                    response_text,
+                )
                 return False
             
             result = response.json() if response.text else {}
@@ -273,19 +309,33 @@ class GWMCarInfoClient:
             else:
                 error_code = result.get("code", "unknown")
                 error_desc = result.get("description", "Unknown error")
-                _LOGGER.warning("Login failed for user %s: %s (%s)", _mask_email(email), error_desc, error_code)
+                self.set_last_error(
+                    code=error_code,
+                    description=error_desc,
+                    http_status=response.status_code,
+                )
+                _LOGGER.warning(
+                    "Login failed for user %s: %s (%s)",
+                    _mask_email(email),
+                    error_desc,
+                    error_code,
+                )
                 return False
             
         except requests.exceptions.SSLError as ssl_err:
+            self.set_last_error(code="ssl_error", description=ssl_err)
             _LOGGER.error("SSL error during login: %s", ssl_err)
             return False
         except requests.exceptions.ConnectionError as conn_err:
+            self.set_last_error(code="connection_error", description=conn_err)
             _LOGGER.error("Connection error during login: %s", conn_err)
             return False
         except requests.exceptions.Timeout as timeout_err:
+            self.set_last_error(code="timeout", description=timeout_err)
             _LOGGER.error("Timeout error during login: %s", timeout_err)
             return False
         except (requests.exceptions.RequestException, ValueError) as exc:
+            self.set_last_error(code="unexpected_error", description=exc)
             _LOGGER.exception("Unexpected error during login: %s", exc)
             return False
 

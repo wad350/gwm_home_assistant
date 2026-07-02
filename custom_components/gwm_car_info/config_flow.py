@@ -26,6 +26,14 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 
+async def _async_create_client(hass: HomeAssistant) -> GWMCarInfoClient:
+    """Create a GWM API client with Home Assistant storage-backed device ID."""
+    client = GWMCarInfoClient()
+    client.device_id_file = hass.config.path(".storage/gwm_car_info_device_id.txt")
+    client.device_id = await hass.async_add_executor_job(client.load_device_id)
+    return client
+
+
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect.
 
@@ -34,19 +42,14 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     
     # Normalize and validate basic fields
     data["email"] = data["email"].strip()
-    data["password"] = data["password"].strip()
     if not data["password"]:
         raise InvalidAuth("Пароль не должен быть пустым")
     # Простая e-mail валидация (не строгая, но защищает от явных опечаток)
     if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", data["email"]):
         raise InvalidAuth("Некорректный формат email")
 
-    # Создаем клиент GWM API
-    client = GWMCarInfoClient()
-    # Настраиваем device_id путь и загружаем device_id (как в __init__.py)
-    device_id_path = hass.config.path(".storage/gwm_car_info_device_id.txt")
-    client.device_id_file = device_id_path
-    client.device_id = await hass.async_add_executor_job(client.load_device_id)
+    # Создаем клиент GWM API с тем же device_id, что используется после настройки.
+    client = await _async_create_client(hass)
     
     try:
         # Проверяем логин
@@ -56,7 +59,13 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
             )
             
             if not login_success:
-                _LOGGER.warning("Login failed for user: %s", _mask_email(data["email"]))
+                _LOGGER.warning(
+                    "Login failed for user %s: status=%s code=%s description=%s",
+                    _mask_email(data["email"]),
+                    client.last_http_status,
+                    client.last_error_code,
+                    client.last_error_description,
+                )
                 raise InvalidAuth("Неверный email или пароль")
         except InvalidAuth:
             raise  # Пробрасываем дальше
@@ -173,7 +182,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 selected_vin = self._label_to_vin.get(selected_label, selected_label)
                 
                 # Создаем клиент и получаем данные выбранного автомобиля
-                client = GWMCarInfoClient()
+                client = await _async_create_client(self.hass)
                 
                 # Логинимся
                 if not self._email or not self._password:
@@ -183,6 +192,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
                 
                 if not login_success:
+                    _LOGGER.warning(
+                        "Login failed during vehicle selection for user %s: "
+                        "status=%s code=%s description=%s",
+                        _mask_email(self._email),
+                        client.last_http_status,
+                        client.last_error_code,
+                        client.last_error_description,
+                    )
                     raise InvalidAuth("Не удалось войти в систему")
                 
                 # Получаем данные автомобиля
