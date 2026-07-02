@@ -32,6 +32,14 @@ class GWMCarInfoClient:
     def __init__(self):
         """Initialize the GWM client."""
         self.session = requests.Session()
+        self.session.headers.update(
+            {
+                "User-Agent": "okhttp/4.12.0",
+                "Accept": "application/json",
+                "Accept-Encoding": "gzip",
+                "Connection": "Keep-Alive",
+            }
+        )
         self.access_token = None
         self.user_info = None
         self.last_error_code = None
