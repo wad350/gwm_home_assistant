@@ -82,7 +82,9 @@ class GWMCarTracker(CoordinatorEntity, TrackerEntity):
     @property
     def location_accuracy(self) -> int:
         """Return the location accuracy of the device."""
-        return 50  # GPS точность примерно 50 метров
+        if not self.coordinator.data:
+            return 50
+        return self.coordinator.data.get("location_accuracy") or 50
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -97,6 +99,7 @@ class GWMCarTracker(CoordinatorEntity, TrackerEntity):
             ATTR_LATITUDE: data.get("latitude"),
             ATTR_LONGITUDE: data.get("longitude"),
             ATTR_UPDATE_TIME: format_timestamp_local(data.get("update_time")),
+            "location_accuracy": self.location_accuracy,
             # ГосНомер берем из coordinator.data (передается из config_entry при setup)
             "vehicleNumber": data.get("vehicleNumber"),
         }

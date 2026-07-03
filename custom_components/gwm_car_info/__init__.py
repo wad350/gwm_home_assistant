@@ -138,6 +138,7 @@ class GWMDataUpdateCoordinator(DataUpdateCoordinator):
                 "vehicleNumber": self.hass.config_entries.async_get_entry(self.config_entry.entry_id).data.get("vehicle_number"),
                 "latitude": vehicle_data.get("latitude"),
                 "longitude": vehicle_data.get("longitude"),
+                "location_accuracy": _extract_location_accuracy(vehicle_data),
                 "update_time": vehicle_data.get("updateTime"),
                 "service_status": vehicle_data.get("serviceStatus"),
                 # "oil_qty": vehicle_data.get("oilQty"),  # не используется — убрано
@@ -145,3 +146,30 @@ class GWMDataUpdateCoordinator(DataUpdateCoordinator):
             
         except (requests.exceptions.RequestException, ValueError, KeyError, TimeoutError) as exception:
             raise UpdateFailed(f"Ошибка обновления данных: {exception}") from exception
+
+
+def _extract_location_accuracy(vehicle_data: dict) -> int | None:
+    """Extract location accuracy in meters from known API fields."""
+    accuracy_keys = (
+        "accuracy",
+        "accuracyRadius",
+        "gpsAccuracy",
+        "gpsRadius",
+        "horizontalAccuracy",
+        "locationAccuracy",
+        "positionAccuracy",
+        "radius",
+    )
+
+    for key in accuracy_keys:
+        value = vehicle_data.get(key)
+        if value is None:
+            continue
+        try:
+            accuracy = round(float(value))
+        except (TypeError, ValueError):
+            continue
+        if accuracy > 0:
+            return accuracy
+
+    return None
