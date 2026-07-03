@@ -74,6 +74,15 @@
       "door_trunk": {"name": "Trunk Door"},
       "hood": {"name": "Hood"},
       "air_conditioner": {"name": "Air Conditioner"},
+      "front_defroster": {"name": "Front Defroster"},
+      "tire_pressure_alarm_fl": {"name": "Front Left Tire Pressure Alarm"},
+      "tire_pressure_alarm_fr": {"name": "Front Right Tire Pressure Alarm"},
+      "tire_pressure_alarm_rl": {"name": "Rear Left Tire Pressure Alarm"},
+      "tire_pressure_alarm_rr": {"name": "Rear Right Tire Pressure Alarm"},
+      "tire_temp_alarm_fl": {"name": "Front Left Tire Temperature Alarm"},
+      "tire_temp_alarm_fr": {"name": "Front Right Tire Temperature Alarm"},
+      "tire_temp_alarm_rl": {"name": "Rear Left Tire Temperature Alarm"},
+      "tire_temp_alarm_rr": {"name": "Rear Right Tire Temperature Alarm"},
       "gps_authorized": {"name": "GPS Authorized"}
     },
     

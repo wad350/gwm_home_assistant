@@ -74,6 +74,15 @@
       "door_trunk": {"name": "Дверь багажника"},
       "hood": {"name": "Капот"},
       "air_conditioner": {"name": "Кондиционер"},
+      "front_defroster": {"name": "Обдув лобового стекла"},
+      "tire_pressure_alarm_fl": {"name": "Авария давления шины передняя левая"},
+      "tire_pressure_alarm_fr": {"name": "Авария давления шины передняя правая"},
+      "tire_pressure_alarm_rl": {"name": "Авария давления шины задняя левая"},
+      "tire_pressure_alarm_rr": {"name": "Авария давления шины задняя правая"},
+      "tire_temp_alarm_fl": {"name": "Авария температуры шины передняя левая"},
+      "tire_temp_alarm_fr": {"name": "Авария температуры шины передняя правая"},
+      "tire_temp_alarm_rl": {"name": "Авария температуры шины задняя левая"},
+      "tire_temp_alarm_rr": {"name": "Авария температуры шины задняя правая"},
       "gps_authorized": {"name": "GPS авторизован"}
     },
     "device_tracker": {

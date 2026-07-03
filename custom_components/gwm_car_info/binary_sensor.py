@@ -40,6 +40,17 @@ async def async_setup_entry(
         
         # Климат и комфорт
         GWMAirConditionerSensor(coordinator, config_entry),
+        GWMFrontDefrosterSensor(coordinator, config_entry),
+        
+        # Шины
+        GWMTireAlarmSensor(coordinator, config_entry, "pressure", "fl"),
+        GWMTireAlarmSensor(coordinator, config_entry, "pressure", "fr"),
+        GWMTireAlarmSensor(coordinator, config_entry, "pressure", "rl"),
+        GWMTireAlarmSensor(coordinator, config_entry, "pressure", "rr"),
+        GWMTireAlarmSensor(coordinator, config_entry, "temp", "fl"),
+        GWMTireAlarmSensor(coordinator, config_entry, "temp", "fr"),
+        GWMTireAlarmSensor(coordinator, config_entry, "temp", "rl"),
+        GWMTireAlarmSensor(coordinator, config_entry, "temp", "rr"),
         
         # Система
         GWMGPSAuthorizedSensor(coordinator, config_entry),
@@ -171,6 +182,59 @@ class GWMAirConditionerSensor(GWMBinarySensorBase):
         if not self.coordinator.data:
             return None
         return self.coordinator.data.get("parsed_data", {}).get("air_conditioner")
+
+
+class GWMFrontDefrosterSensor(GWMBinarySensorBase):
+    """Front defroster sensor."""
+
+    def __init__(self, coordinator, config_entry: ConfigEntry) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, config_entry)
+        self._attr_unique_id = f"{coordinator.vin}_front_defroster"
+        self._attr_translation_key = "front_defroster"
+        self._attr_device_class = BinarySensorDeviceClass.HEAT
+        self._attr_icon = "mdi:car-defrost-front"
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if front defroster is on."""
+        if not self.coordinator.data:
+            return None
+        return self.coordinator.data.get("parsed_data", {}).get("front_defroster")
+
+
+class GWMTireAlarmSensor(GWMBinarySensorBase):
+    """Tire pressure or temperature alarm sensor."""
+
+    def __init__(
+        self,
+        coordinator,
+        config_entry: ConfigEntry,
+        alarm_type: str,
+        position: str,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, config_entry)
+        self.alarm_type = alarm_type
+        self.position = position
+        self._attr_unique_id = f"{coordinator.vin}_tire_{alarm_type}_alarm_{position}"
+        self._attr_translation_key = f"tire_{alarm_type}_alarm_{position}"
+        self._attr_device_class = BinarySensorDeviceClass.PROBLEM
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
+        self._attr_icon = (
+            "mdi:car-tire-alert"
+            if alarm_type == "pressure"
+            else "mdi:thermometer-alert"
+        )
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if tire alarm is active."""
+        if not self.coordinator.data:
+            return None
+        return self.coordinator.data.get("parsed_data", {}).get(
+            f"tire_{self.alarm_type}_alarm_{self.position}"
+        )
 
 
 # Система

@@ -440,6 +440,14 @@ class GWMCarInfoClient:
             'tire_temp_fr': None,          # 2101006 - Температура передней правой
             'tire_temp_rl': None,          # 2101007 - Температура задней левой
             'tire_temp_rr': None,          # 2101008 - Температура задней правой
+            'tire_pressure_alarm_fl': None, # 2102001 - Авария давления передней левой
+            'tire_pressure_alarm_fr': None, # 2102002 - Авария давления передней правой
+            'tire_pressure_alarm_rl': None, # 2102003 - Авария давления задней левой
+            'tire_pressure_alarm_rr': None, # 2102004 - Авария давления задней правой
+            'tire_temp_alarm_fl': None,    # 2102007 - Авария температуры передней левой
+            'tire_temp_alarm_fr': None,    # 2102008 - Авария температуры передней правой
+            'tire_temp_alarm_rl': None,    # 2102009 - Авария температуры задней левой
+            'tire_temp_alarm_rr': None,    # 2102010 - Авария температуры задней правой
             
             # Состояние автомобиля
             'engine_state': None,          # 2016001 - Состояние двигателя
@@ -453,8 +461,9 @@ class GWMCarInfoClient:
             
             # Климат и комфорт
             'air_conditioner': None,       # 2202001 - Кондиционер
+            'front_defroster': None,       # 2222001 - Обогрев/обдув лобового стекла
             'sunroof_position': None,      # 2210005 - Позиция люка
-            # defrost/seat_heat — не используются в интеграции
+            # seat_heat — не используется в интеграции
             
             # Система
             'gps_authorized': None,        # 2310001 - Авторизация GPS
@@ -503,6 +512,22 @@ class GWMCarInfoClient:
                 info['tire_temp_rl'] = numeric_value
             elif code == '2101008':
                 info['tire_temp_rr'] = numeric_value
+            elif code == '2102001':
+                info['tire_pressure_alarm_fl'] = numeric_value == 1
+            elif code == '2102002':
+                info['tire_pressure_alarm_fr'] = numeric_value == 1
+            elif code == '2102003':
+                info['tire_pressure_alarm_rl'] = numeric_value == 1
+            elif code == '2102004':
+                info['tire_pressure_alarm_rr'] = numeric_value == 1
+            elif code == '2102007':
+                info['tire_temp_alarm_fl'] = numeric_value == 1
+            elif code == '2102008':
+                info['tire_temp_alarm_fr'] = numeric_value == 1
+            elif code == '2102009':
+                info['tire_temp_alarm_rl'] = numeric_value == 1
+            elif code == '2102010':
+                info['tire_temp_alarm_rr'] = numeric_value == 1
                 
             # Состояние автомобиля
             elif code == '2016001':
@@ -526,12 +551,14 @@ class GWMCarInfoClient:
             # Климат и комфорт
             elif code == '2202001':
                 info['air_conditioner'] = numeric_value == 1
+            elif code == '2222001':
+                info['front_defroster'] = numeric_value == 1
             elif code == '2210005':
                 if numeric_value == 3:
                     info['sunroof_position'] = 0  # Закрыт
                 else:
                     info['sunroof_position'] = numeric_value  # % открытия
-            # defrost/seat_heat — опускаем
+            # seat_heat — опускаем
                 
             # Система
             elif code == '2310001':
