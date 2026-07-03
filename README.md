@@ -1,7 +1,7 @@
 # GWM Car Info - Home Assistant Integration
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub release](https://img.shields.io/github/v/release/wad350/gwm_home_assistant?include_prereleases&sort=semver)](https://github.com/wad350/gwm_home_assistant/releases/)
+[![GitHub release](https://img.shields.io/github/v/release/wad350/gwm_home_assistant?sort=semver)](https://github.com/wad350/gwm_home_assistant/releases/)
 
 Полнофункциональная Home Assistant интеграция для получения информации об автомобилях GWM (TANK, HAVAL, ORA, WEY).
 
