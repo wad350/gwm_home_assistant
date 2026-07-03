@@ -1,7 +1,7 @@
 """Constants for the GWM Car Info integration."""
 
 DOMAIN = "gwm_car_info"
-VERSION = "1.0"
+VERSION = "1.0.3"
 
 # Интервал обновления данных (в секундах)
 UPDATE_INTERVAL = 30  # 30 секунд
